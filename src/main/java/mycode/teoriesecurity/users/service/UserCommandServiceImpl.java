@@ -7,7 +7,7 @@ import mycode.teoriesecurity.users.dtos.CreateUserDTO;
 import mycode.teoriesecurity.users.exceptions.UserAlreadyExists;
 import mycode.teoriesecurity.users.model.User;
 import mycode.teoriesecurity.users.repository.UserRepository;
-import org.springframework.cglib.core.Local;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,13 +16,15 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class UserCommandServiceImpl implements UserCommandService{
-
+    private BCryptPasswordEncoder passwordEncoder;
     UserRepository userRepository;
+
+
     @Override
     public void addUser(CreateUserDTO createUserDTO) {
         User user  = User.builder()
                 .phoneNumber(createUserDTO.phoneNumber())
-                .password(createUserDTO.password())
+                .password(passwordEncoder.encode(createUserDTO.password()))
                 .firstName(createUserDTO.firstName())
                 .lastName(createUserDTO.lastName())
                 .email(createUserDTO.email())

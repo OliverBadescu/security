@@ -91,6 +91,7 @@ public class UserControllerServer {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest user) {
 
+        authenticate(user.email(), user.password());
         User loginUser = userQueryService.findByEmail(user.email());
         User userPrincipal = getUser(loginUser);
 
@@ -145,5 +146,9 @@ public class UserControllerServer {
         userPrincipal.setRegisteredAt(loginUser.getRegisteredAt());
         userPrincipal.setCreatedAt(loginUser.getCreatedAt());
         return userPrincipal;
+    }
+
+    private void authenticate(String username, String password) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 }
